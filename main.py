@@ -1,21 +1,24 @@
 import pygame as pg
 import math
 
-from map import wrold_map
+from map import world_map
 from config import *
 from player_settings import *
 from player_control import Player
 from ray_casting import ray_casting
+from draw import Drawing
 
 
 pg.init()
 
 # Инициализация часов и экрана
 Screen = pg.display.set_mode((WIDTH, HEIGHT))
+mini_map_screen = pg.Surface((WIDTH // MAP_SCALE, HEIGHT // MAP_SCALE))
 clock = pg.time.Clock()
 
 # Инициализация игрока
 player = Player()
+drawing = Drawing(Screen, mini_map_screen)
 
 if __name__ == '__main__':
     while 1:
@@ -31,12 +34,18 @@ if __name__ == '__main__':
         # Заливка экрана
         Screen.fill(colors["black"])
 
-        # Отрисовка неба и пола
-        pg.draw.rect(Screen, colors["light-blue"], (0, 0, WIDTH, HALF_HEIGHT))
-        pg.draw.rect(Screen, colors["dark-gray"], (0, HALF_HEIGHT, WIDTH, HEIGHT))
+        drawing.draw_background()
 
-        ray_casting(Screen, player.get_pos, player.angle)
+        drawing.draw_map(player.get_pos, player.angle)
+
+        # Отрисовка счётчика fps
+        drawing.fps_rate(clock)
+
+        # Отрисовка мини-карты
+        drawing.draw_mini_map(player)
 
         pg.display.flip()
+
         # Установка количества кадров в секунду
         clock.tick(FPS)
+        # clock.tick()

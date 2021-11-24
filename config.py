@@ -6,7 +6,7 @@ WIDTH = 1200
 HEIGHT = 800
 
 # Основные настройки
-FPS = 60
+FPS = 75
 
 # цвета
 colors = \
@@ -18,7 +18,8 @@ colors = \
     "blue": (0, 0, 255),
     "gray": (125, 125, 125),
     "light-gray": (200, 200, 200),
-    "light-blue": (135, 205, 235)
+    "light-blue": (0, 160, 255),
+    "yellow": (220, 220, 0)
     }
 
 # Прочее
@@ -26,13 +27,16 @@ TILE_WIDTH = 100
 HALF_WIDTH = WIDTH // 2
 HALF_HEIGHT = HEIGHT // 2
 
-
 # Ray-casting технология
 len_of_rays = 1000  # Длина луча
 FOV = math.pi / 3  # Угол обзора
 HALF_FOV = FOV / 2
-NUM_OF_RAYS = 120  # Количество лучей испускаемых камерой
+NUM_OF_RAYS = 300  # Количество лучей испускаемых камерой
 dt_ANGLE = FOV / NUM_OF_RAYS  # Угол между лучами
 DIST = NUM_OF_RAYS / (2 * math.tan(HALF_FOV))  # Расстояние до объекта
-PROJECTION_C = 3 * DIST * TILE_WIDTH  # Коэфициент отображения
+PROJECTION_C = DIST * TILE_WIDTH  # Коэфициент отображения
 SCALE = WIDTH // NUM_OF_RAYS  # Коэфициент масштабирования объекта на экране
+
+# Мини-карта
+MAP_SCALE = 5
+MAP_TILE = TILE_WIDTH // MAP_SCALE
