@@ -9,6 +9,7 @@ class Drawing:
         self.sc = sc
         self.mini_map_surf = mini_map_surf
         self.font = pg.font.SysFont('Arial', 48, bold=True)
+        self.texture = pg.image.load('textures/wall.png').convert()
 
     def draw_background(self):
         # Отрисовка неба и пола
@@ -16,7 +17,7 @@ class Drawing:
         pg.draw.rect(self.sc, colors["light-gray"], (0, HALF_HEIGHT, WIDTH, HEIGHT))
 
     def draw_map(self, player_pos, player_angle):
-        ray_casting(self.sc, player_pos, player_angle)
+        ray_casting(self.sc, player_pos, player_angle, self.texture)
 
     def fps_rate(self, clock):
         display_fps = str(int(clock.get_fps()))

@@ -6,7 +6,7 @@ WIDTH = 1200
 HEIGHT = 800
 
 # Основные настройки
-FPS = 75
+FPS = 60
 
 # цвета
 colors = \
@@ -34,9 +34,13 @@ HALF_FOV = FOV / 2
 NUM_OF_RAYS = 300  # Количество лучей испускаемых камерой
 dt_ANGLE = FOV / NUM_OF_RAYS  # Угол между лучами
 DIST = NUM_OF_RAYS / (2 * math.tan(HALF_FOV))  # Расстояние до объекта
-PROJECTION_C = DIST * TILE_WIDTH  # Коэфициент отображения
+PROJECTION_C = 3 * DIST * TILE_WIDTH  # Коэфициент отображения
 SCALE = WIDTH // NUM_OF_RAYS  # Коэфициент масштабирования объекта на экране
 
 # Мини-карта
 MAP_SCALE = 5
 MAP_TILE = TILE_WIDTH // MAP_SCALE
+
+# Текстуры
+T_WIDTH, T_HEIGHT = 1200, 1200
+T_Scale = T_WIDTH // TILE_WIDTH
