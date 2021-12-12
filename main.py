@@ -34,7 +34,7 @@ if __name__ == '__main__':
         # Заливка экрана
         Screen.fill(colors["black"])
 
-        drawing.draw_background()
+        drawing.draw_background(player.angle)
 
         drawing.draw_map(player.get_pos, player.angle)
 

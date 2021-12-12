@@ -9,15 +9,23 @@ class Drawing:
         self.sc = sc
         self.mini_map_surf = mini_map_surf
         self.font = pg.font.SysFont('Arial', 48, bold=True)
-        self.texture = pg.image.load('textures/wall.png').convert()
+        self.textures = {
+            "1": pg.image.load('textures/wall1.png').convert(),
+            "2": pg.image.load('textures/wall2.png').convert(),
+            "sky": pg.image.load('textures/sky.png').convert()
+        }
 
-    def draw_background(self):
+    def draw_background(self, angle):
         # Отрисовка неба и пола
-        pg.draw.rect(self.sc, colors["light-blue"], (0, 0, WIDTH, HALF_HEIGHT))
+        sky_offset = -5 * math.degrees(angle) % WIDTH
+        self.sc.blit(self.textures['sky'], (sky_offset, 0))
+        self.sc.blit(self.textures['sky'], (sky_offset - WIDTH, 0))
+        self.sc.blit(self.textures['sky'], (sky_offset + WIDTH, 0))
+
         pg.draw.rect(self.sc, colors["light-gray"], (0, HALF_HEIGHT, WIDTH, HEIGHT))
 
     def draw_map(self, player_pos, player_angle):
-        ray_casting(self.sc, player_pos, player_angle, self.texture)
+        ray_casting(self.sc, player_pos, player_angle, self.textures)
 
     def fps_rate(self, clock):
         display_fps = str(int(clock.get_fps()))
