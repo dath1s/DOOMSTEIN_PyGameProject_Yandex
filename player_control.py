@@ -1,11 +1,12 @@
 from player_settings import *
 import pygame as pg
 import math
+from config import *
 
 
 class Player:
     def __init__(self):
-        self.x, self.y = player_start_pos
+        self.pos = self.x, self.y = player_start_pos
         self.angle = player_view_angle
 
     @property
@@ -33,3 +34,5 @@ class Player:
             self.angle -= 0.02
         if keys[pg.K_RIGHT]:
             self.angle += 0.02
+
+        self.angle %= DOUBLE_PI

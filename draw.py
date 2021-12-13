@@ -17,15 +17,18 @@ class Drawing:
 
     def draw_background(self, angle):
         # Отрисовка неба и пола
-        sky_offset = -5 * math.degrees(angle) % WIDTH
+        sky_offset = -10 * math.degrees(angle) % WIDTH
         self.sc.blit(self.textures['sky'], (sky_offset, 0))
         self.sc.blit(self.textures['sky'], (sky_offset - WIDTH, 0))
         self.sc.blit(self.textures['sky'], (sky_offset + WIDTH, 0))
 
-        pg.draw.rect(self.sc, colors["light-gray"], (0, HALF_HEIGHT, WIDTH, HEIGHT))
+        pg.draw.rect(self.sc, (40, 40, 40), (0, HALF_HEIGHT, WIDTH, HEIGHT))
 
-    def draw_map(self, player_pos, player_angle):
-        ray_casting(self.sc, player_pos, player_angle, self.textures)
+    def draw_map(self, world_obj):
+        for obj in sorted(world_obj, key=lambda x: x[0], reverse=True):
+            if obj[0]:
+                _, cur_obj, cur_obj_pos = obj
+                self.sc.blit(cur_obj, cur_obj_pos)
 
     def fps_rate(self, clock):
         display_fps = str(int(clock.get_fps()))
@@ -41,4 +44,4 @@ class Drawing:
         for x, y in mini_map:
             pg.draw.rect(self.mini_map_surf, (1, 50, 32), (x, y, TILE_WIDTH // MAP_SCALE, TILE_WIDTH // MAP_SCALE))
         pg.draw.circle(self.mini_map_surf, colors["yellow"], (int(player_x), player_y), 5)
-        self.sc.blit(self.mini_map_surf, (WIDTH - WIDTH // MAP_SCALE, 0))
+        self.sc.blit(self.mini_map_surf, (WIDTH - WIDTH // MAP_SCALE-60, 0))

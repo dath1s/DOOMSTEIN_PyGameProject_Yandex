@@ -7,9 +7,10 @@ def select_cur_sector(x, y):
     return (x // TILE_WIDTH) * TILE_WIDTH, (y // TILE_WIDTH) * TILE_WIDTH
 
 
-def ray_casting(sc, player_pos, player_angle, textures):
-    cur_angle = player_angle - HALF_FOV
-    s_X, s_Y = player_pos
+def ray_casting(player, textures):
+    walls = []
+    cur_angle = player.angle - HALF_FOV
+    s_X, s_Y = player.get_pos
     c_X, c_Y = select_cur_sector(s_X, s_Y)
     for ray in range(NUM_OF_RAYS):
         sin_a = math.sin(cur_angle)
@@ -39,12 +40,15 @@ def ray_casting(sc, player_pos, player_angle, textures):
         # Отображение ближайшего пересечения
         depth, offset, cur_texture = (depth_v, yv, texture_v) if depth_v < depth_h else (depth_h, xh, texture_h)
         offset = int(offset) % TILE_WIDTH
-        depth *= math.cos(player_angle - cur_angle)
+        depth *= math.cos(player.angle - cur_angle)
         depth = max(depth, 0.00001)
         projection_height = min(int(PROJECTION_C / depth), 2 * HEIGHT)
 
         wall_texture = textures[cur_texture].subsurface(offset * T_Scale, 0, T_Scale, T_HEIGHT)
         wall_texture = pg.transform.scale(wall_texture, (SCALE, projection_height))
-        sc.blit(wall_texture, (ray * SCALE, HALF_HEIGHT - projection_height // 2))
+        wall_pos = (ray * SCALE, HALF_HEIGHT - projection_height // 2)
 
+        walls.append((depth, wall_texture, wall_pos))
         cur_angle += dt_ANGLE
+
+    return walls

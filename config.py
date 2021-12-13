@@ -44,3 +44,7 @@ MAP_TILE = TILE_WIDTH // MAP_SCALE
 # Текстуры
 T_WIDTH, T_HEIGHT = 1200, 1200
 T_Scale = T_WIDTH // TILE_WIDTH
+
+# Спрайты
+DOUBLE_PI = math.pi * 2
+Center_RAY = NUM_OF_RAYS // 2 - 1
