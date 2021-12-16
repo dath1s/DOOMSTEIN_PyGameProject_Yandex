@@ -14,7 +14,7 @@ pg.init()
 
 # Инициализация часов и экрана
 Screen = pg.display.set_mode((WIDTH, HEIGHT))
-mini_map_screen = pg.Surface((400, 160))
+mini_map_screen = pg.Surface(MINIMAP_RESOLUTION)
 clock = pg.time.Clock()
 
 # Инициализация игрока

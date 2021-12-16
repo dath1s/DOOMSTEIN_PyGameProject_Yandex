@@ -10,8 +10,8 @@ class Drawing:
         self.mini_map_surf = mini_map_surf
         self.font = pg.font.SysFont('Arial', 48, bold=True)
         self.textures = {
-            "1": pg.image.load('textures/wall1.png').convert(),
-            "2": pg.image.load('textures/wall2.png').convert(),
+            1: pg.image.load('textures/wall1.png').convert(),
+            2: pg.image.load('textures/wall2.png').convert(),
             "sky": pg.image.load('textures/sky.png').convert()
         }
 
@@ -44,4 +44,4 @@ class Drawing:
         for x, y in mini_map:
             pg.draw.rect(self.mini_map_surf, (1, 50, 32), (x, y, TILE_WIDTH // MAP_SCALE, TILE_WIDTH // MAP_SCALE))
         pg.draw.circle(self.mini_map_surf, colors["yellow"], (int(player_x), player_y), 5)
-        self.sc.blit(self.mini_map_surf, (WIDTH - WIDTH // MAP_SCALE-60, 0))
+        self.sc.blit(self.mini_map_surf, MAP_POS)

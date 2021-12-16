@@ -1,6 +1,6 @@
 import pygame as pg
 from config import *
-from map import world_map
+from map import world_map, WORLD_HEIGHT, WORLD_WIDTH
 
 
 def select_cur_sector(x, y):
@@ -12,13 +12,15 @@ def ray_casting(player, textures):
     cur_angle = player.angle - HALF_FOV
     s_X, s_Y = player.get_pos
     c_X, c_Y = select_cur_sector(s_X, s_Y)
+
+    texture_v, texture_h = 1, 1
     for ray in range(NUM_OF_RAYS):
         sin_a = math.sin(cur_angle)
         cos_a = math.cos(cur_angle)
 
         # Поиск пересечений с границами квадрантов
         x, dx = (c_X + TILE_WIDTH, 1) if cos_a >= 0 else (c_X, -1)
-        for i in range(0, WIDTH, TILE_WIDTH):
+        for i in range(0, WORLD_WIDTH, TILE_WIDTH):
             depth_v = (x - s_X) / cos_a
             yv = s_Y + depth_v * sin_a
             tile_v = select_cur_sector(x + dx, yv)
@@ -28,7 +30,7 @@ def ray_casting(player, textures):
             x += dx * TILE_WIDTH
 
         y, dy = (c_Y + TILE_WIDTH, 1) if sin_a >= 0 else (c_Y, -1)
-        for i in range(0, WIDTH, TILE_WIDTH):
+        for i in range(0, WORLD_HEIGHT, TILE_WIDTH):
             depth_h = (y - s_Y) / sin_a
             xh = s_X + depth_h * cos_a
             tile_h = select_cur_sector(xh, y + dy)
@@ -42,7 +44,7 @@ def ray_casting(player, textures):
         offset = int(offset) % TILE_WIDTH
         depth *= math.cos(player.angle - cur_angle)
         depth = max(depth, 0.00001)
-        projection_height = min(int(PROJECTION_C / depth), 2 * HEIGHT)
+        projection_height = min(int(PROJECTION_C / depth), PENTA_HEIGHT)
 
         wall_texture = textures[cur_texture].subsurface(offset * T_Scale, 0, T_Scale, T_HEIGHT)
         wall_texture = pg.transform.scale(wall_texture, (SCALE, projection_height))
