@@ -2,6 +2,8 @@ from player_settings import *
 import pygame as pg
 import math
 from config import *
+import pygame as pg
+from map import walls_collision
 
 
 class Player:
@@ -9,14 +11,46 @@ class Player:
         self.pos = self.x, self.y = player_start_pos
         self.angle = player_view_angle
         self.sense = 0.001
+        # Коллизии
+        self.side = 50
+        self.rect = pg.Rect(*player_start_pos, self.side, self.side)
 
     @property
     def get_pos(self):
         return int(self.x), int(self.y)
 
+    def detection_of_walls(self, dx, dy):
+        next_rect = self.rect.copy()
+        next_rect.move_ip(dx, dy)
+        hit_indexes = next_rect.collidelistall(walls_collision)
+
+        if len(hit_indexes):
+            dt_x, dt_y = 0, 0
+            for hit_index in hit_indexes:
+                hit_rect = walls_collision[hit_index]
+                if dx > 0:
+                    dt_x += next_rect.right - hit_rect.left
+                else:
+                    dt_x += hit_rect.right - next_rect.left
+
+                if dy > 0:
+                    dt_y += next_rect.bottom - hit_rect.top
+                else:
+                    dt_y += hit_rect.bottom - next_rect.top
+
+            if abs(dt_x - dt_y) < 10:
+                dx, dy = 0, 0
+            elif dt_x > dt_y:
+                dy = 0
+            elif dt_y > dt_x:
+                dx = 0
+        self.x += dx
+        self.y += dy
+
     def to_move(self):
         self.to_move_mouse()
         self.to_move_keys()
+        self.rect.center = self.x, self.y
 
     def to_move_mouse(self):
         if pg.mouse.get_focused():
@@ -31,18 +65,24 @@ class Player:
         # Проверка на нажатия
         if keys[pg.K_ESCAPE]:
             exit()
+
         if keys[pg.K_w]:
-            self.x += player_speed * cos_a
-            self.y += player_speed * sin_a
+            dx = player_speed * cos_a
+            dy = player_speed * sin_a
+            self.detection_of_walls(dx, dy)
         if keys[pg.K_s]:
-            self.x += -player_speed * cos_a
-            self.y += -player_speed * sin_a
+            dx = -player_speed * cos_a
+            dy = -player_speed * sin_a
+            self.detection_of_walls(dx, dy)
         if keys[pg.K_d]:
-            self.x += -player_speed * sin_a
-            self.y += player_speed * cos_a
+            dx = -player_speed * sin_a
+            dy = player_speed * cos_a
+            self.detection_of_walls(dx, dy)
         if keys[pg.K_a]:
-            self.x += player_speed * sin_a
-            self.y += -player_speed * cos_a
+            dx = player_speed * sin_a
+            dy = -player_speed * cos_a
+            self.detection_of_walls(dx, dy)
+
         if keys[pg.K_LEFT]:
             self.angle -= 0.02
         if keys[pg.K_RIGHT]:

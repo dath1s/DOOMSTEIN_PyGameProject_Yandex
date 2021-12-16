@@ -1,5 +1,5 @@
 from config import *
-
+import pygame as pg
 
 _ = False
 map = \
@@ -27,10 +27,16 @@ WORLD_HEIGHT = len(map) * TILE_WIDTH
 
 world_map = {}
 mini_map = set()
+
+walls_collision = []
+
 for num, row in enumerate(map):
     for elem_num, char in enumerate(row):
         if char:
             mini_map.add((elem_num * MAP_TILE, num * MAP_TILE))
+            walls_collision.append(pg.Rect(elem_num * TILE_WIDTH,
+                                           num * TILE_WIDTH,
+                                           TILE_WIDTH, TILE_WIDTH))
 
             if char == 1:
                 world_map[(elem_num * TILE_WIDTH, num * TILE_WIDTH)] = 1
