@@ -12,6 +12,8 @@ from sprites_log import *
 
 pg.init()
 
+pg.mouse.set_visible(False)
+
 # Инициализация часов и экрана
 Screen = pg.display.set_mode((WIDTH, HEIGHT))
 mini_map_screen = pg.Surface(MINIMAP_RESOLUTION)
@@ -43,7 +45,7 @@ if __name__ == '__main__':
 
         walls = ray_casting(player, drawing.textures)
 
-        drawing.draw_map(walls + [obj.obj_detector(player, walls) for obj in sprites.obj_list])
+        drawing.draw_map(walls + [obj.obj_detector(player) for obj in sprites.obj_list])
 
         # Отрисовка счётчика fps
         drawing.fps_rate(clock)

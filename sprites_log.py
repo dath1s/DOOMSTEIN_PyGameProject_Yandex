@@ -28,11 +28,7 @@ class SpriteObj:
             self.sprite_positions = {angle: pos for angle, pos in zip(self.sprite_angles, self.obj)}
 
 
-    def obj_detector(self, player, walls):
-        none_render_walls_FST = [walls[0] for _ in range(NONE_VISIABLE_RAYS)]
-        none_render_walls_SCND = [walls[-1] for _ in range(NONE_VISIABLE_RAYS)]
-        none_render_walls = none_render_walls_FST + walls + none_render_walls_SCND
-
+    def obj_detector(self, player):
         dx, dy = self.x - player.x, self.y - player.y
         dist_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
 
@@ -47,8 +43,8 @@ class SpriteObj:
 
         fake_ray = cur_ray + NONE_VISIABLE_RAYS
 
-        if 0 <= fake_ray <= NUM_OF_RAYS - 1 + 2 * NONE_VISIABLE_RAYS and dist_to_sprite < none_render_walls[fake_ray][0]:
-            proj_height = int(PROJECTION_C / dist_to_sprite * self.scale)
+        if 0 <= fake_ray <= FAKE_RAYS_RANGE and dist_to_sprite > 30:
+            proj_height = min(int(PROJECTION_C / dist_to_sprite * self.scale), DOUBLE_HEIGHT)
             half_projection_height = proj_height // 2
             shift = half_projection_height * self.shift
 

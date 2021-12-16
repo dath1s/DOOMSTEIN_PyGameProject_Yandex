@@ -37,6 +37,7 @@ DIST = NUM_OF_RAYS / (2 * math.tan(HALF_FOV))  # Расстояние до об�
 PROJECTION_C = 3 * DIST * TILE_WIDTH  # Коэфициент отображения
 SCALE = WIDTH // NUM_OF_RAYS  # Коэфициент масштабирования объекта на экране
 PENTA_HEIGHT = 5 * HEIGHT
+DOUBLE_HEIGHT = 2 * HEIGHT
 
 # Мини-карта
 MINIMAP_SCALE = 5
@@ -53,3 +54,4 @@ T_Scale = T_WIDTH // TILE_WIDTH
 DOUBLE_PI = math.pi * 2
 Center_RAY = NUM_OF_RAYS // 2 - 1
 NONE_VISIABLE_RAYS = 100
+FAKE_RAYS_RANGE = NUM_OF_RAYS - 1 + 2 * NONE_VISIABLE_RAYS
