@@ -7,27 +7,35 @@ from map import walls_collision
 
 
 class Player:
-    def __init__(self):
+    def __init__(self, sprites):
         self.pos = self.x, self.y = player_start_pos
+        self.sprites = sprites
         self.angle = player_view_angle
         self.sense = 0.001
         # Коллизии
         self.side = 50
         self.rect = pg.Rect(*player_start_pos, self.side, self.side)
+        self.sprites_collisions = [
+            pg.Rect(*obj.pos, obj.side, obj.side) for obj in self.sprites.obj_list if obj.blocked
+        ]
+        self.list_of_collisions = walls_collision + self.sprites_collisions
 
     @property
     def get_pos(self):
         return int(self.x), int(self.y)
 
+    def get_cur_pos(self):
+        return round(self.x / TILE_WIDTH, 2), round(self.y / TILE_WIDTH, 2)
+
     def detection_of_walls(self, dx, dy):
         next_rect = self.rect.copy()
         next_rect.move_ip(dx, dy)
-        hit_indexes = next_rect.collidelistall(walls_collision)
+        hit_indexes = next_rect.collidelistall(self.list_of_collisions)
 
         if len(hit_indexes):
             dt_x, dt_y = 0, 0
             for hit_index in hit_indexes:
-                hit_rect = walls_collision[hit_index]
+                hit_rect = self.list_of_collisions[hit_index]
                 if dx > 0:
                     dt_x += next_rect.right - hit_rect.left
                 else:

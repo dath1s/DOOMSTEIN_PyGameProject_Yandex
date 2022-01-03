@@ -19,13 +19,12 @@ Screen = pg.display.set_mode((WIDTH, HEIGHT))
 mini_map_screen = pg.Surface(MINIMAP_RESOLUTION)
 clock = pg.time.Clock()
 
-# Инициализация игрока
-player = Player()
-drawing = Drawing(Screen, mini_map_screen)
-
-# Инициализация оюъектов класса спрайт
+# Инициализация объектов класса спрайт
 sprites = Sprites()
 
+# Инициализация игрока
+player = Player(sprites)
+drawing = Drawing(Screen, mini_map_screen)
 
 if __name__ == '__main__':
     while 1:
@@ -47,8 +46,9 @@ if __name__ == '__main__':
 
         drawing.draw_map(walls + [obj.obj_detector(player) for obj in sprites.obj_list])
 
-        # Отрисовка счётчика fps
+        # Отрисовка счётчика показателей
         drawing.fps_rate(clock)
+        drawing.pos(player)
 
         # Отрисовка мини-карты
         drawing.draw_mini_map(player)

@@ -35,6 +35,11 @@ class Drawing:
         render = self.font.render(display_fps, False, colors["green"])
         self.sc.blit(render, (20, 20))
 
+    def pos(self, player):
+        display_pos = f'x: {player.get_cur_pos()[0]}; y: {player.get_cur_pos()[1]}'
+        render = self.font.render(display_pos, False, colors["green"])
+        self.sc.blit(render, (20, 60))
+
     def draw_mini_map(self, player):
         self.mini_map_surf.fill(colors["black"])
         player_x, player_y = player.x // MAP_SCALE, player.y // MAP_SCALE

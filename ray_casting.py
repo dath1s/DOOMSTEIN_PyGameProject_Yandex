@@ -1,12 +1,15 @@
 import pygame as pg
 from config import *
 from map import world_map, WORLD_HEIGHT, WORLD_WIDTH
+from numba import njit
 
 
+@njit(fastmath=True)
 def select_cur_sector(x, y):
     return (x // TILE_WIDTH) * TILE_WIDTH, (y // TILE_WIDTH) * TILE_WIDTH
 
 
+# @njit(fastmath=True)
 def ray_casting(player, textures):
     walls = []
     cur_angle = player.angle - HALF_FOV

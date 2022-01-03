@@ -15,7 +15,8 @@ class Sprites:
                     pg.image.load(f'sprites/barrel/anim/{i}.png').convert_alpha() for i in range(8)
                 ]),
                 'animation_dist': 800,
-                'animation_speed': 10
+                'animation_speed': 10,
+                'blocked': True
             },
             'sprite_devil': {
                 'sprite': [pg.image.load(f'sprites/devil/base/{i}.png').convert_alpha() for i in range(8)],
@@ -25,7 +26,8 @@ class Sprites:
                 'animation': deque(
                     [pg.image.load(f'sprites/devil/anim/{i}.png').convert_alpha() for i in range(9)]),
                 'animation_dist': 150,
-                'animation_speed': 10
+                'animation_speed': 10,
+                'blocked': True
             },
             'sprite_flame': {
                 'sprite': pg.image.load('sprites/flame/base/0.png').convert_alpha(),
@@ -35,7 +37,8 @@ class Sprites:
                 'animation': deque(
                     [pg.image.load(f'sprites/flame/anim/{i}.png').convert_alpha() for i in range(16)]),
                 'animation_dist': 800,
-                'animation_speed': 5
+                'animation_speed': 5,
+                'blocked': False
             }
         }
         # self.sprite_types = {
@@ -47,21 +50,24 @@ class Sprites:
             [
                 SpriteObj(self.sprite_params['sprite_barrel'], (7.1, 2.1)),
                 SpriteObj(self.sprite_params['sprite_barrel'], (5.9, 2.1)),
-                SpriteObj(self.sprite_params['sprite_devil'], (7, 4)),
-                SpriteObj(self.sprite_params['sprite_flame'], (7, 7))
+                SpriteObj(self.sprite_params['sprite_devil'], (8.7, 2.1)),
+                SpriteObj(self.sprite_params['sprite_flame'], (10.5, 2.1))
             ]
 
 class SpriteObj:
     def __init__(self, params, pos):
         self.obj = params['sprite']
         self.viewing_angles = params['viewing_angles']
-        self.pos = self.x, self.y = pos[0] * TILE_WIDTH, pos[1] * TILE_WIDTH
+        self.x, self.y = pos[0] * TILE_WIDTH, pos[1] * TILE_WIDTH
         self.shift = params['shift']
         self.scale = params['scale']
         self.animation = params['animation']
         self.animation_dist = params['animation_dist']
         self.animation_speed = params['animation_speed']
         self.animation_counter = 0
+        self.blocked = params['blocked']
+        self.side = 30
+        self.pos = self.x - self.side // 2, self.y - self.side // 2
 
         if self.viewing_angles:
             self.sprite_angles = [frozenset(range(i, i + 45)) for i in range(0, 360, 45)]
