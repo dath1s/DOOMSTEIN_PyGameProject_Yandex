@@ -1,6 +1,4 @@
 from player_settings import *
-import pygame as pg
-import math
 from config import *
 import pygame as pg
 from map import walls_collision
@@ -15,14 +13,17 @@ class Player:
         # Коллизии
         self.side = 50
         self.rect = pg.Rect(*player_start_pos, self.side, self.side)
-        self.sprites_collisions = [
-            pg.Rect(*obj.pos, obj.side, obj.side) for obj in self.sprites.obj_list if obj.blocked
-        ]
-        self.list_of_collisions = walls_collision + self.sprites_collisions
+        self.shot = False
 
     @property
     def get_pos(self):
         return int(self.x), int(self.y)
+
+    @property
+    def list_of_collisions(self):
+        return walls_collision + [
+            pg.Rect(*obj.pos, obj.side, obj.side) for obj in self.sprites.obj_list if obj.blocked
+        ]
 
     def get_cur_pos(self):
         return round(self.x / TILE_WIDTH, 2), round(self.y / TILE_WIDTH, 2)
@@ -59,6 +60,7 @@ class Player:
         self.to_move_mouse()
         self.to_move_keys()
         self.rect.center = self.x, self.y
+        self.angle %= DOUBLE_PI
 
     def to_move_mouse(self):
         if pg.mouse.get_focused():
@@ -96,4 +98,7 @@ class Player:
         if keys[pg.K_RIGHT]:
             self.angle += 0.02
 
-        self.angle %= DOUBLE_PI
+        if keys[pg.K_f]:
+            if not self.shot:
+                self.shot = True
+

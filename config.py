@@ -49,6 +49,7 @@ MAP_POS = (0, HEIGHT - HEIGHT // MINIMAP_SCALE)
 # Текстуры
 T_WIDTH, T_HEIGHT = 1200, 1200
 T_Scale = T_WIDTH // TILE_WIDTH
+HALF_TEX_HEIGHT = T_HEIGHT // 2
 
 # Спрайты
 DOUBLE_PI = math.pi * 2

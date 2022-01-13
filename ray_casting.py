@@ -47,11 +47,20 @@ def ray_casting(player, textures):
         offset = int(offset) % TILE_WIDTH
         depth *= math.cos(player.angle - cur_angle)
         depth = max(depth, 0.00001)
-        projection_height = min(int(PROJECTION_C / depth), PENTA_HEIGHT)
+        projection_height = int(PROJECTION_C / depth)
 
-        wall_texture = textures[cur_texture].subsurface(offset * T_Scale, 0, T_Scale, T_HEIGHT)
-        wall_texture = pg.transform.scale(wall_texture, (SCALE, projection_height))
-        wall_pos = (ray * SCALE, HALF_HEIGHT - projection_height // 2)
+        if projection_height > HEIGHT:
+            dt_c = projection_height / HEIGHT
+            texture_height = T_HEIGHT / dt_c
+
+            wall_texture = textures[cur_texture].subsurface(offset * T_Scale, HALF_TEX_HEIGHT - texture_height // 2,
+                                                            T_Scale, texture_height)
+            wall_texture = pg.transform.scale(wall_texture, (SCALE, HEIGHT))
+            wall_pos = (ray * SCALE, 0)
+        else:
+            wall_texture = textures[cur_texture].subsurface(offset * T_Scale, 0, T_Scale, T_HEIGHT)
+            wall_texture = pg.transform.scale(wall_texture, (SCALE, projection_height))
+            wall_pos = (ray * SCALE, HALF_HEIGHT - projection_height // 2)
 
         walls.append((depth, wall_texture, wall_pos))
         cur_angle += dt_ANGLE

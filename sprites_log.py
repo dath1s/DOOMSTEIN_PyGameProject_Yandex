@@ -48,10 +48,10 @@ class Sprites:
 
         self.obj_list = \
             [
-                SpriteObj(self.sprite_params['sprite_barrel'], (7.1, 2.1)),
-                SpriteObj(self.sprite_params['sprite_barrel'], (5.9, 2.1)),
-                SpriteObj(self.sprite_params['sprite_devil'], (8.7, 2.1)),
-                SpriteObj(self.sprite_params['sprite_flame'], (10.5, 2.1))
+                SpriteObj(self.sprite_params['sprite_barrel'], (7.1, 2.8)),
+                SpriteObj(self.sprite_params['sprite_barrel'], (5.9, 2.8)),
+                SpriteObj(self.sprite_params['sprite_devil'], (8.7, 2.8)),
+                SpriteObj(self.sprite_params['sprite_flame'], (10.5, 2.8))
             ]
 
 class SpriteObj:
