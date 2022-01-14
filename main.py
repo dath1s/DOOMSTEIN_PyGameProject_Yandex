@@ -42,14 +42,14 @@ if __name__ == '__main__':
 
         drawing.draw_background(player.angle)
 
-        walls = ray_casting(player, drawing.textures)
+        walls, wall_shot_effect = ray_casting(player, drawing.textures)
 
         drawing.draw_map(walls + [obj.obj_detector(player) for obj in sprites.obj_list])
 
         # Отрисовка счётчика показателей
         drawing.fps_rate(clock)
         drawing.pos(player)
-        drawing.player_weapon()
+        drawing.player_weapon([wall_shot_effect, sprites.sprite_shot])
 
         # стрельба
         for event in pg.event.get():

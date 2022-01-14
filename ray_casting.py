@@ -62,7 +62,8 @@ def ray_casting(player, textures):
             wall_texture = pg.transform.scale(wall_texture, (SCALE, projection_height))
             wall_pos = (ray * SCALE, HALF_HEIGHT - projection_height // 2)
 
-        walls.append((depth, wall_texture, wall_pos))
+        walls.append((depth, wall_texture, wall_pos, projection_height))
         cur_angle += dt_ANGLE
+    wall_shot_effect = walls[Center_RAY][0], walls[Center_RAY][3]
 
-    return walls
+    return walls, wall_shot_effect

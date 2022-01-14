@@ -54,6 +54,10 @@ class Sprites:
                 SpriteObj(self.sprite_params['sprite_flame'], (10.5, 2.8))
             ]
 
+    @property
+    def sprite_shot(self):
+        return min([obj.is_on_fireway for obj in self.obj_list], default=(float('inf'), 0))
+
 class SpriteObj:
     def __init__(self, params, pos):
         self.obj = params['sprite']
@@ -67,45 +71,53 @@ class SpriteObj:
         self.animation_counter = 0
         self.blocked = params['blocked']
         self.side = 30
-        self.pos = self.x - self.side // 2, self.y - self.side // 2
 
         if self.viewing_angles:
             self.sprite_angles = [frozenset(range(i, i + 45)) for i in range(0, 360, 45)]
             self.sprite_positions = {angle: pos for angle, pos in zip(self.sprite_angles, self.obj)}
 
+    @property
+    def is_on_fireway(self):
+        if Center_RAY - self.side // 2 < self.cur_ray < Center_RAY + self.side // 2 and self.blocked:
+            return self.dist_to_sprite, self.proj_height
+        return float('inf'), None
+
+    @property
+    def pos(self):
+        return self.x - self.side // 2, self.y - self.side // 2
 
     def obj_detector(self, player):
         dx, dy = self.x - player.x, self.y - player.y
-        dist_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
+        self.dist_to_sprite = math.sqrt(dx ** 2 + dy ** 2)
 
-        theta = math.atan2(dy, dx)
-        gamma = theta - player.angle
+        self.theta = math.atan2(dy, dx)
+        gamma = self.theta - player.angle
         if dx > 0 and 180 <= math.degrees(player.angle) <= 360 or dx < 0 and dy < 0:
             gamma += DOUBLE_PI
 
         dt_rays = int(gamma / dt_ANGLE)
-        cur_ray = Center_RAY + dt_rays
-        dist_to_sprite *= math.cos(HALF_FOV - cur_ray * dt_ANGLE)
+        self.cur_ray = Center_RAY + dt_rays
+        self.dist_to_sprite *= math.cos(HALF_FOV - self.cur_ray * dt_ANGLE)
 
-        fake_ray = cur_ray + NONE_VISIABLE_RAYS
+        fake_ray = self.cur_ray + NONE_VISIABLE_RAYS
 
-        if 0 <= fake_ray <= FAKE_RAYS_RANGE and dist_to_sprite > 30:
-            proj_height = min(int(PROJECTION_C / dist_to_sprite * self.scale), DOUBLE_HEIGHT)
-            half_projection_height = proj_height // 2
+        if 0 <= fake_ray <= FAKE_RAYS_RANGE and self.dist_to_sprite > 30:
+            self.proj_height = min(int(PROJECTION_C / self.dist_to_sprite * self.scale), DOUBLE_HEIGHT)
+            half_projection_height = self.proj_height // 2
             shift = half_projection_height * self.shift
 
             if self.viewing_angles:
-                if theta < 0:
-                    theta += DOUBLE_PI
-                theta = 360 - int(math.degrees(theta))
+                if self.theta < 0:
+                    self.theta += DOUBLE_PI
+                self.theta = 360 - int(math.degrees(self.theta))
 
                 for angles in self.sprite_angles:
-                    if theta in angles:
+                    if self.theta in angles:
                         self.obj = self.sprite_positions[angles]
 
             # Анимация спрайтов
             sprite_obj = self.obj
-            if self.animation and dist_to_sprite < self.animation_dist:
+            if self.animation and self.dist_to_sprite < self.animation_dist:
                 sprite_obj = self.animation[0]
                 if self.animation_counter < self.animation_speed:
                     self.animation_counter += 1
@@ -114,9 +126,9 @@ class SpriteObj:
                     self.animation_counter = 0
 
             # Проекция спрайта
-            sprite_position = (cur_ray * SCALE - half_projection_height, HALF_HEIGHT - half_projection_height + shift)
-            sprite = pg.transform.scale(sprite_obj, (proj_height, proj_height))
+            sprite_position = (self.cur_ray * SCALE - half_projection_height, HALF_HEIGHT - half_projection_height + shift)
+            sprite = pg.transform.scale(sprite_obj, (self.proj_height, self.proj_height))
 
-            return (dist_to_sprite, sprite, sprite_position)
+            return (self.dist_to_sprite, sprite, sprite_position, None)
         else:
             return (False,)
