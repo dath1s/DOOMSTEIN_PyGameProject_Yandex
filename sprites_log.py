@@ -1,18 +1,20 @@
 import pygame as pg
 from config import *
 from collections import deque
+from ray_casting import select_cur_sector
 
 
 class Sprites:
     def __init__(self):
         self.sprite_params = {
             'sprite_barrel': {
+                'name': 'barrel',
                 'sprite': pg.image.load('sprites/barrel/base/0.png').convert_alpha(),
                 'viewing_angles': None,
                 'shift': 1.8,
                 'scale': (0.4, 0.4),
                 'animation': deque([
-                    pg.image.load(f'sprites/barrel/anim/{i}.png').convert_alpha() for i in range(8)
+                    pg.image.load(f'sprites/barrel/anim/{i}.png').convert_alpha() for i in range(1)
                 ]),
                 'death_animation': deque([
                     pg.image.load(f'sprites/barrel/death/{i}.png').convert_alpha() for i in range(4)
@@ -27,6 +29,7 @@ class Sprites:
                 'side': 30
             },
             'sprite_devil': {
+                'name': 'devil',
                 'sprite': [pg.image.load(f'sprites/devil/base/{i}.png').convert_alpha() for i in range(8)],
                 'viewing_angles': True,
                 'shift': -0.2,
@@ -47,6 +50,7 @@ class Sprites:
                 'side': 50
             },
             'sprite_flame': {
+                'name': 'flame',
                 'sprite': pg.image.load('sprites/flame/base/0.png').convert_alpha(),
                 'viewing_angles': None,
                 'shift': 0.7,
@@ -62,6 +66,40 @@ class Sprites:
                 'flag': 'decor',
                 'obj_action': [],
                 'side': 30
+            },
+            'sprite_door_h': {
+                'name': 'door',
+                'sprite': [pg.image.load(f'sprites/doors/door_h/{i}.png').convert_alpha() for i in range(16)],
+                'viewing_angles': True,
+                'shift': 0.1,
+                'scale': (2.6, 1.2),
+                'side': 100,
+                'animation': [],
+                'death_animation': [],
+                'is_dead': 'immortal',
+                'death_shift': 0,
+                'animation_dist': 0,
+                'animation_speed': 0,
+                'blocked': True,
+                'flag': 'door_v',
+                'obj_action': []
+            },
+            'sprite_door_v': {
+                'name': 'door',
+                'sprite': [pg.image.load(f'sprites/doors/door_v/{i}.png').convert_alpha() for i in range(16)],
+                'viewing_angles': True,
+                'shift': 0.1,
+                'scale': (2.6, 1.2),
+                'side': 100,
+                'animation': [],
+                'death_animation': [],
+                'is_dead': 'immortal',
+                'death_shift': 0,
+                'animation_dist': 0,
+                'animation_speed': 0,
+                'blocked': True,
+                'flag': 'door_h',
+                'obj_action': []
             }
         }
         # self.sprite_types = {
@@ -71,15 +109,31 @@ class Sprites:
 
         self.obj_list = \
             [
-                SpriteObj(self.sprite_params['sprite_barrel'], (7.1, 2.8)),
-                SpriteObj(self.sprite_params['sprite_barrel'], (5.9, 2.8)),
-                SpriteObj(self.sprite_params['sprite_devil'], (8.7, 2.8)),
-                SpriteObj(self.sprite_params['sprite_flame'], (10.5, 2.8))
+                SpriteObj(self.sprite_params['sprite_barrel'], (8.5, 5.5)),
+                SpriteObj(self.sprite_params['sprite_barrel'], (8.5, 12.5)),
+                SpriteObj(self.sprite_params['sprite_barrel'], (15.5, 5.5)),
+                SpriteObj(self.sprite_params['sprite_barrel'], (15.5, 12.5)),
+                SpriteObj(self.sprite_params['sprite_devil'], (20, 9.5)),
+                SpriteObj(self.sprite_params['sprite_flame'], (12, 10.15)),
+                SpriteObj(self.sprite_params['sprite_flame'], (12, 7.9)),
+                SpriteObj(self.sprite_params['sprite_door_h'], (12.5, 5.5)),
+                SpriteObj(self.sprite_params['sprite_door_h'], (11.5, 12.5)),
+                SpriteObj(self.sprite_params['sprite_door_v'], (8.5, 8.5)),
+                SpriteObj(self.sprite_params['sprite_door_v'], (15.5, 8.5))
             ]
 
     @property
     def sprite_shot(self):
         return min([obj.is_on_fireway for obj in self.obj_list], default=(float('inf'), 0))
+
+    @property
+    def blocked_doors(self):
+        blocked_doors = {}
+        for obj in self.obj_list:
+            if obj.flag in {'door_h', 'door_v'} and obj.blocked:
+                i, j = select_cur_sector(obj.x, obj.y)
+                blocked_doors[(i, j)] = 0
+        return blocked_doors
 
 
 class SpriteObj:
@@ -113,6 +167,8 @@ class SpriteObj:
 
         self.delete = False
 
+        self.name = params['name']
+
         if self.viewing_angles:
             if len(self.obj) == 8:
                 self.sprite_angles = [frozenset(range(338, 361)) | frozenset(range(0, 23))] + \
@@ -144,27 +200,35 @@ class SpriteObj:
 
         dt_rays = int(gamma / dt_ANGLE)
         self.cur_ray = Center_RAY + dt_rays
-        self.dist_to_sprite *= math.cos(HALF_FOV - self.cur_ray * dt_ANGLE)
+        if self.flag not in {'door_h', 'door_v'}:
+            self.dist_to_sprite *= math.cos(HALF_FOV - self.cur_ray * dt_ANGLE)
 
         fake_ray = self.cur_ray + NONE_VISIABLE_RAYS
 
         if 0 <= fake_ray <= FAKE_RAYS_RANGE and self.dist_to_sprite > 30:
-            self.proj_height = min(int(PROJECTION_C / self.dist_to_sprite), DOUBLE_HEIGHT)
+            self.proj_height = min(int(PROJECTION_C / self.dist_to_sprite),
+                                   DOUBLE_HEIGHT if self.flag not in {'door_h', 'door_v'} else HEIGHT)
             sprite_width = int(self.proj_height * self.scale[0])
             sprite_height = int(self.proj_height * self.scale[1])
             half_sprite_width = sprite_width // 2
             half_sprite_height = sprite_height // 2
             shift = half_sprite_height * self.shift
 
-            if self.is_dead and self.is_dead != 'immortal':
-                sprite_object = self.death_animation()
-                shift = half_sprite_height * self.dead_shift
-                sprite_height = int(sprite_height / 1.3)
-            elif self.npc_action_trigger:
-                sprite_object = self.npc_action()
-            else:
+            if self.flag in {'door_h', 'door_v'}:
+                if self.door_open_trigger:
+                    self.open_door()
                 self.obj = self.visible_sprite()
                 sprite_object = self.sprite_animation()
+            else:
+                if self.is_dead and self.is_dead != 'immortal':
+                    sprite_object = self.death_animation_player()
+                    shift = half_sprite_height * self.dead_shift
+                    sprite_height = int(sprite_height / 1.3)
+                elif self.npc_action_trigger:
+                    sprite_object = self.npc_action()
+                else:
+                    self.obj = self.visible_sprite()
+                    sprite_object = self.sprite_animation()
 
             # Проекция спрайта
             sprite_position = (
@@ -197,7 +261,7 @@ class SpriteObj:
                     return self.sprite_positions[angles]
         return self.obj
 
-    def death_animation(self):
+    def death_animation_player(self):
         if len(self.death_animation):
             if self.dead_animation_count < self.animation_speed:
                 self.dead_sprite = self.death_animation[0]
@@ -209,9 +273,19 @@ class SpriteObj:
 
     def npc_action(self):
         sprite_object = self.obj_action[0]
-        if self.animation_count < self.animation_speed:
-            self.animation_count += 1
+        if self.animation_counter < self.animation_speed:
+            self.animation_counter += 1
         else:
             self.obj_action.rotate()
-            self.animation_count = 0
+            self.animation_counter = 0
         return sprite_object
+
+    def open_door(self):
+        if self.flag == 'door_h':
+            self.y -= 3
+            if abs(self.y - self.door_prev_pos) > TILE_WIDTH:
+                self.delete = True
+        elif self.flag == 'door_v':
+            self.x -= 3
+            if abs(self.x - self.door_prev_pos) > TILE_WIDTH:
+                self.delete = True

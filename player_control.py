@@ -14,6 +14,8 @@ class Player:
         self.side = 50
         self.rect = pg.Rect(*player_start_pos, self.side, self.side)
         self.shot = False
+        self.health = 100
+        self.score = 0
 
     @property
     def get_pos(self):
@@ -101,4 +103,3 @@ class Player:
         if keys[pg.K_f]:
             if not self.shot:
                 self.shot = True
-
