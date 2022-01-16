@@ -289,7 +289,7 @@ class SpriteObj:
 
             # Проекция спрайта
             sprite_position = (
-            self.cur_ray * SCALE - half_sprite_width, HALF_HEIGHT - half_sprite_height + shift)
+                self.cur_ray * SCALE - half_sprite_width, HALF_HEIGHT - half_sprite_height + shift)
             sprite = pg.transform.scale(sprite_object, (sprite_width, sprite_height))
 
             return (self.dist_to_sprite, sprite, sprite_position, None)

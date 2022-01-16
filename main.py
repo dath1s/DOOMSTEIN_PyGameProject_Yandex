@@ -60,6 +60,7 @@ if __name__ == '__main__':
         interaction.interaction_objects()
         interaction.npc_action()
         interaction.clear_world()
+
         interaction.check_win()
 
         drawing.draw_health(player)

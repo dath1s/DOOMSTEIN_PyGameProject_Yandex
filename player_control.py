@@ -61,6 +61,7 @@ class Player:
     def to_move(self):
         self.to_move_mouse()
         self.to_move_keys()
+
         self.rect.center = self.x, self.y
         self.angle %= DOUBLE_PI
 

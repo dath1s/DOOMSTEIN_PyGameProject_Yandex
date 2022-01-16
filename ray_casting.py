@@ -27,9 +27,11 @@ def ray_casting(player, textures):
             depth_v = (x - s_X) / cos_a
             yv = s_Y + depth_v * sin_a
             tile_v = select_cur_sector(x + dx, yv)
+
             if tile_v in world_map:
                 texture_v = world_map[tile_v]
                 break
+
             x += dx * TILE_WIDTH
 
         y, dy = (c_Y + TILE_WIDTH, 1) if sin_a >= 0 else (c_Y, -1)
@@ -37,9 +39,11 @@ def ray_casting(player, textures):
             depth_h = (y - s_Y) / sin_a
             xh = s_X + depth_h * cos_a
             tile_h = select_cur_sector(xh, y + dy)
+
             if tile_h in world_map:
                 texture_h = world_map[tile_h]
                 break
+
             y += dy * TILE_WIDTH
 
         # Отображение ближайшего пересечения
