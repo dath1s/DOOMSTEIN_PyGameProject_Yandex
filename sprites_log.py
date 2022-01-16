@@ -100,7 +100,45 @@ class Sprites:
                 'blocked': True,
                 'flag': 'door_h',
                 'obj_action': []
-            }
+            },
+            'npc_soldier0': {
+                'name': 'soilder',
+                'sprite': [pg.image.load(f'sprites/soilder/base/{i}.png').convert_alpha() for i in range(8)],
+                'viewing_angles': True,
+                'shift': 0.8,
+                'scale': (0.4, 0.6),
+                'side': 30,
+                'animation': [],
+                'death_animation': deque([pg.image.load(f'sprites/soilder/death/{i}.png')
+                                         .convert_alpha() for i in range(11)]),
+                'is_dead': None,
+                'death_shift': 1.7,
+                'animation_dist': None,
+                'animation_speed': 6,
+                'blocked': True,
+                'flag': 'npc',
+                'obj_action': deque([pg.image.load(f'sprites/soilder/action/{i}.png')
+                                    .convert_alpha() for i in range(4)])
+            },
+            'npc_soldier1': {
+                'name': 'soilder_c',
+                'sprite': [pg.image.load(f'sprites/soilder/base/{i}.png').convert_alpha() for i in range(8)],
+                'viewing_angles': True,
+                'shift': 0.8,
+                'scale': (0.4, 0.6),
+                'side': 30,
+                'animation': [],
+                'death_animation': deque([pg.image.load(f'sprites/soilder/death/{i}.png')
+                                         .convert_alpha() for i in range(11)]),
+                'is_dead': None,
+                'death_shift': 1.7,
+                'animation_dist': None,
+                'animation_speed': 6,
+                'blocked': True,
+                'flag': 'npc',
+                'obj_action': deque([pg.image.load(f'sprites/soilder/action/{i}.png')
+                                    .convert_alpha() for i in range(4)])
+            },
         }
         # self.sprite_types = {
         #     'barrel': pg.image.load('sprites/barrel/0.png').convert_alpha(),
@@ -113,13 +151,32 @@ class Sprites:
                 SpriteObj(self.sprite_params['sprite_barrel'], (8.5, 12.5)),
                 SpriteObj(self.sprite_params['sprite_barrel'], (15.5, 5.5)),
                 SpriteObj(self.sprite_params['sprite_barrel'], (15.5, 12.5)),
-                SpriteObj(self.sprite_params['sprite_devil'], (20, 9.5)),
                 SpriteObj(self.sprite_params['sprite_flame'], (12, 10.15)),
                 SpriteObj(self.sprite_params['sprite_flame'], (12, 7.9)),
                 SpriteObj(self.sprite_params['sprite_door_h'], (12.5, 5.5)),
                 SpriteObj(self.sprite_params['sprite_door_h'], (11.5, 12.5)),
+                SpriteObj(self.sprite_params['sprite_door_v'], (6.5, 15.5)),
+                SpriteObj(self.sprite_params['sprite_door_v'], (5.5, 2.5)),
                 SpriteObj(self.sprite_params['sprite_door_v'], (8.5, 8.5)),
-                SpriteObj(self.sprite_params['sprite_door_v'], (15.5, 8.5))
+                SpriteObj(self.sprite_params['sprite_door_v'], (15.5, 8.5)),
+                SpriteObj(self.sprite_params['sprite_devil'], (20, 9.5)),
+                SpriteObj(self.sprite_params['sprite_devil'], (22, 7.8)),
+                SpriteObj(self.sprite_params['sprite_devil'], (23, 13)),
+                SpriteObj(self.sprite_params['sprite_devil'], (22, 4)),
+                SpriteObj(self.sprite_params['sprite_devil'], (14.5, 13.7)),
+                SpriteObj(self.sprite_params['sprite_devil'], (11.5, 13.7)),
+                SpriteObj(self.sprite_params['sprite_devil'], (12, 3)),
+                SpriteObj(self.sprite_params['sprite_devil'], (5, 11)),
+                SpriteObj(self.sprite_params['npc_soldier1'], (14, 9)),
+                SpriteObj(self.sprite_params['npc_soldier1'], (14, 7.5)),
+                SpriteObj(self.sprite_params['npc_soldier1'], (14, 10)),
+                SpriteObj(self.sprite_params['npc_soldier0'], (17, 15)),
+                SpriteObj(self.sprite_params['npc_soldier0'], (7, 7)),
+                SpriteObj(self.sprite_params['npc_soldier0'], (12, 14)),
+                SpriteObj(self.sprite_params['npc_soldier0'], (9, 14.5)),
+                SpriteObj(self.sprite_params['npc_soldier1'], (15, 14.5)),
+                SpriteObj(self.sprite_params['npc_soldier1'], (8, 3)),
+                SpriteObj(self.sprite_params['npc_soldier0'], (5.5, 14.5))
             ]
 
     @property
@@ -247,7 +304,7 @@ class SpriteObj:
             else:
                 self.animation.rotate()
                 self.animation_counter = 0
-            return  sprite_obj
+            return sprite_obj
         return self.obj
 
     def visible_sprite(self):

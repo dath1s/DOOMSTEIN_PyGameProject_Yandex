@@ -94,6 +94,30 @@ class Interaction:
                 else:
                     self.player.health -= 10
                     self.dt_attack = 0
+        elif obj.name == 'soilder':
+            if abs(obj.dist_to_sprite) > TILE_WIDTH * 2:
+                dx = obj.x - self.player.x
+                dy = obj.y - self.player.y
+                obj.x = obj.x + 1 if dx < 0 else obj.x - 1
+                obj.y = obj.y + 1 if dy < 0 else obj.y - 1
+            else:
+                if self.dt_attack < self.attack_time:
+                    self.dt_attack += 1
+                else:
+                    self.player.health -= 10
+                    self.dt_attack = 0
+        elif obj.name == 'soilder_c':
+            if abs(obj.dist_to_sprite) > TILE_WIDTH * 1.5:
+                dx = obj.x - self.player.x
+                dy = obj.y - self.player.y
+                obj.x = obj.x + 1 if dx < 0 else obj.x - 1
+                obj.y = obj.y + 1 if dy < 0 else obj.y - 1
+            else:
+                if self.dt_attack < self.attack_time:
+                    self.dt_attack += 1
+                else:
+                    self.player.health -= 10
+                    self.dt_attack = 0
 
     def clear_world(self):
         deleted_objects = self.sprites.obj_list[:]
